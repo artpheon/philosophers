@@ -5,17 +5,12 @@ t_phil *get_next_phil(t_ph_prop *p)
 {
 	t_phil *ph;
 
+	++p->i;
 	ph = p->phil;
-	if (p->i == p->total - 2)
-		fsleep(1);
-	if (p->i > p->total)
-		p->i = 2;
 	while (ph->id != p->i)
 	{
 		ph = ph->right;
 	}
-	p->i += 2;
-	//return (ph);
 	return (ph);
 }
 
@@ -84,10 +79,10 @@ void eat_routine_odd(t_ph_prop *p, t_phil *phil)
 
 void pcycle_eat_routine(t_ph_prop *p, t_phil *phil)
 {
-	//if (p->total % 2 == 0)
+	if (p->total % 2 == 0)
 		eat_routine_even(p, phil);
-	//else
-	//	eat_routine_odd(p, phil);
+	else
+		eat_routine_odd(p, phil);
 }
 
 void *pcycle(void *args)

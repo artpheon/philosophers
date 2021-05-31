@@ -1,73 +1,57 @@
 #include "philosophers.h"
 
-void	phil_tonull(t_phil *p)
+int	phil_tonull(t_phil *p)
 {
-	p->left = NULL;
-	p->right = NULL;
 	p->fork_right = NULL;
 	p->fin = false;
-	p->st_slp = false;
-	p->st_thk = false;
-	p->st_dea = false;
-	p->lhanded = false;
-	p->rhanded = false;
 	p->ate_stmp = 0;
+	p->ate_num = 0;
 	p->id = 0;
-	pthread_mutex_init(&p->fork_left, NULL);
+	if (pthread_mutex_init(&p->fork_left, NULL))
+		return (perr_exit("Fork left mutex init:"));
+	if (pthread_mutex_init(&p->wait_fork, NULL))
+		return (perr_exit("Wait fork mutex init:"));
+	if (pthread_mutex_lock(&p->wait_fork))
+		return (perr_exit("Wait fork mutex lock"));
+	return (0);
 }
 
-t_phil	*get_phil(t_phil *first, unsigned int n)
+void	phil_set(t_phil *ph, int index, size_t size)
 {
-	t_phil	*prev;
+	int	next;
+
+	if (index == size - 1)
+		next = 0;
+	else
+		next = index + 1;
+	ph[index].fork_right = &ph[next].fork_left;
+	ph[index].id = index + 1;
+}
+
+t_phil	*prop_get_phil(size_t n)
+{
 	t_phil	*new;
-	int	i;
+	int		i;
 
-	i = 1;
-	prev = first;
-	first->rhanded = true;
-	while (i < n)
+	new = (t_phil *)malloc(sizeof(t_phil) * n);
+	if (new)
 	{
-		new = (t_phil *)malloc(sizeof(t_phil));
-		if (new == NULL)
-			return (NULL);
-		phil_tonull(new);
-		if (i % 2 == 0)
-			new->rhanded = true;
-		else
-			new->lhanded = true;
-		new->id = (++i);
-		prev->right = new;
-		prev->fork_right = &new->fork_left;
-		new->left = prev;
-		prev = new;
+		i = 0;
+		while (i < n)
+		{
+			if (phil_tonull(&new[i]))
+				return (NULL);
+			phil_set(new, i, n);
+			++i;
+		}
+		return (new);
 	}
-	return (new);
+	return (NULL);
 }
 
-t_phil  *prop_get_phil(unsigned int n)
+int	fill_prop_num(int *num, int argc, char *argv[])
 {
-	t_phil	*first;
-	t_phil	*last;
-
-	first = NULL;
-	last = NULL;
-	if (n == 0)
-		return (NULL);
-	first = (t_phil *)malloc(sizeof(t_phil));
-	if (first == NULL)
-		return (NULL);
-	phil_tonull(first);
-	first->id = 1;
-	last = get_phil(first, n);
-	first->left = last;
-	last->right = first;
-	last->fork_right = &first->fork_left;
-	return (first);
-}
-
-int fill_prop_num(long int *num, int argc, char *argv[])
-{
-	int i;
+	int	i;
 
 	i = 1;
 	if (argc > 6 || argc < 5)
@@ -84,31 +68,17 @@ int fill_prop_num(long int *num, int argc, char *argv[])
 	return (0);
 }
 
-int	ph_fill_prop(t_ph_prop *p, char *argv[], int argc)
+void	ph_fill_prop_basic(t_ph_prop *p, const int num[], int argc)
 {
-	long int num[5];
-
-	if (fill_prop_num(num, argc, argv) == 1)
-		return (1);
-	p->i = 1;
+	p->i = 0;
 	p->total = num[0];
-	if (p->total == 1)
-		return (err_exit("Cannot be less than 2 philosophers"));
 	p->t_die = num[1];
 	p->t_eat = num[2];
 	p->t_slp = num[3];
-	if (p->t_eat >= p->t_die || p->t_slp >= p->t_die)
-		return (err_exit("Philosophers will die before finishing eating or sleeping"));
-	gettimeofday(&p->t, NULL);
 	p->start_t = get_time();
+	p->eat_num = 0;
 	if (argc == 6)
 		p->m_eat_num = num[4];
 	else
 		p->m_eat_num = 0;
-	pthread_mutex_init(&p->print_lock, NULL);
-	pthread_mutex_init(&p->fork_lock, NULL);
-	p->phil = prop_get_phil(p->total);
-	if (p->phil == NULL)
-		return (err_exit("Could not create a philosopher"));
-	return (0);
 }

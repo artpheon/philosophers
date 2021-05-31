@@ -45,7 +45,7 @@ int	main(int argc, char *argv[])
 {
 	t_ph_prop	p;
 	pthread_t	*threads;
-	size_t		i;
+	int			i;
 
 	setbuf(stdout, NULL);
 	if (ph_fill_prop(&p, argv, argc) == 1)

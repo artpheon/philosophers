@@ -48,8 +48,8 @@ uint64_t	get_time(void);
 void		fsleep(useconds_t mcrsec);
 
 int			phil_tonull(t_phil *p);
-void		phil_set(t_phil *ph, int index, size_t size);
-t_phil		*prop_get_phil(size_t n);
+void		phil_set(t_phil *ph, int index, int size);
+t_phil		*prop_get_phil(int n);
 int			fill_prop_num(int *num, int argc, char *argv[]);
 void		ph_fill_prop_basic(t_ph_prop *p, const int num[], int argc);
 int			ph_fill_prop(t_ph_prop *p, char *argv[], int argc);

@@ -9,7 +9,7 @@ void	*watch_stat(void *args)
 	p = (t_ph_prop *)args;
 	phil = p->phil;
 	i = 0;
-	while ((get_time() - p->start_t - phil[i].ate_stmp) < p->t_die)
+	while ((int)(get_time() - p->start_t - phil[i].ate_stmp) < p->t_die)
 	{
 		usleep(100);
 		if (p->eat_num == p->total)

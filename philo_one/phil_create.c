@@ -16,7 +16,7 @@ int	phil_tonull(t_phil *p)
 	return (0);
 }
 
-void	phil_set(t_phil *ph, int index, size_t size)
+void	phil_set(t_phil *ph, int index, int size)
 {
 	int	next;
 
@@ -28,7 +28,7 @@ void	phil_set(t_phil *ph, int index, size_t size)
 	ph[index].id = index + 1;
 }
 
-t_phil	*prop_get_phil(size_t n)
+t_phil	*prop_get_phil(int n)
 {
 	t_phil	*new;
 	int		i;

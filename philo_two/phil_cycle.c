@@ -26,6 +26,7 @@ void	print_stat(t_ph_prop *p, t_phil *phil, int stat)
 
 void	pcycle_eat_routine(t_ph_prop *p, t_phil *phil, int round)
 {
+	pthread_mutex_lock(&phil->eat_block);
 	sem_wait(p->sem);
 	print_stat(p, phil, STFRK);
 	sem_wait(p->sem);

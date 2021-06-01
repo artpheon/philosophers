@@ -13,6 +13,10 @@ t_phil	*prop_get_phil(int n)
 		{
 			new[i].id = i + 1;
 			new[i].ate_stmp = 0;
+			if (pthread_mutex_init(&new[i].eat_block, NULL))
+				return (NULL);
+			if (pthread_mutex_lock(&new[i].eat_block))
+				return (NULL);
 			++i;
 		}
 		return (new);

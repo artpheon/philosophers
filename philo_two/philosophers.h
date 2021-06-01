@@ -16,8 +16,9 @@
 
 typedef struct s_phil
 {
-	int			id;
-	uint64_t	ate_stmp;
+	int				id;
+	uint64_t		ate_stmp;
+	pthread_mutex_t	eat_block;
 }	t_phil;
 
 typedef struct s_ph_prop

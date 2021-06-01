@@ -7,7 +7,7 @@ bool	exited_all(int stat[], int size)
 	i = 0;
 	while (i < size)
 	{
-		if (stat[i])
+		if (stat[i] == 0)
 			++i;
 		else
 			return (false);
@@ -20,7 +20,7 @@ int	wait_all(pid_t pids[], int status[], int size)
 	int	i;
 
 	i = 0;
-	while (status[i] != 255 << 8)
+	while (status[i] != 1 << 8)
 	{
 		waitpid(pids[i], &status[i], WNOHANG);
 		++i;
@@ -58,5 +58,7 @@ int	watcher_setup(t_ph_prop	*p)
 	}
 	else
 		print_stat(p, p->phil, p->i);
+	sem_close(p->sem);
+	sem_close(p->common);
 	return (0);
 }

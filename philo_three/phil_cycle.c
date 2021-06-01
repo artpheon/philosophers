@@ -47,7 +47,7 @@ void	*pcycle_check_death(void *arg)
 	while ((int)(get_time() - p->start_t - phil->ate_stmp) < p->t_die)
 		usleep(100);
 	print_stat(p, phil, STDEA);
-	exit(-1);
+	exit(1);
 }
 
 int	pcycle(t_ph_prop *args)
@@ -61,18 +61,17 @@ int	pcycle(t_ph_prop *args)
 	phil = &p->phil[p->i];
 	i = 0;
 	if (pthread_create(&watcher, NULL, &pcycle_check_death, p))
-		return (perr_exit("Inner watcher was not created:"));
+		exit(perr_exit("Inner watcher was not created:"));
 	if (pthread_detach(watcher))
-		return (perr_exit("Inner watcher was not detached:"));
-	while (1)
+		exit(perr_exit("Inner watcher was not detached:"));
+	while (++i)
 	{
 		pcycle_eat_routine(p, phil);
-		if (i == p->m_eat_num - 1)
-			break ;
+		if (i == p->m_eat_num)
+			exit(0);
 		print_stat(p, phil, STSLP);
 		fsleep(ms_to_micros(p->t_slp));
 		print_stat(p, phil, STTHNK);
-		++i;
 	}
-	exit(1);
+	exit(0);
 }

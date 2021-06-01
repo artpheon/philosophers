@@ -28,10 +28,14 @@ void	*watch_stat(void *args)
 int	watcher_setup(t_ph_prop *p)
 {
 	pthread_t	watcher;
+	int			ret;
 
-	if (pthread_create(&watcher, NULL, watch_stat, p))
-		return (perr_exit("watcher was not created."));
-	if (pthread_join(watcher, NULL))
-		return (perr_exit("Could not join watcher:"));
-	return (0);
+	ret = pthread_create(&watcher, NULL, watch_stat, p);
+	if (ret)
+		perr_exit("watcher was not created.");
+	ret = pthread_join(watcher, NULL);
+	if (ret)
+		perr_exit("Could not join watcher:");
+	sem_close(p->sem);
+	return (ret);
 }

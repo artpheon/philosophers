@@ -52,6 +52,5 @@ int	main(int argc, char *argv[])
 	if (ph_fill_prop(&p, argv, argc) == 1)
 		return (1);
 	fork_philosophers(&p);
-	stat = watcher_setup(&p);
-	return (stat);
+	return (watcher_setup(&p));
 }

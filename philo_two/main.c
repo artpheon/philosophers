@@ -49,6 +49,7 @@ int	main(int argc, char *argv[])
 	if (!threads)
 		return (perr_exit("Malloc for threads failed:"));
 	i = 0;
+	p.start_t = get_time();
 	while (i < p.total)
 	{
 		if (pthread_create(&threads[i], NULL, pcycle, &p))
@@ -57,8 +58,5 @@ int	main(int argc, char *argv[])
 			return (perr_exit("Pthread_detach for philosophers failed:"));
 		++i;
 	}
-	p.start_t = get_time();
-	if (watcher_setup(&p))
-		return (1);
-	return (0);
+	return (watcher_setup(&p));
 }

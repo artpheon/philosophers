@@ -55,7 +55,9 @@ int	ph_fill_prop_basic(t_ph_prop *p, int num[], int argc)
 	p->pid = (pid_t *)malloc(sizeof(pid_t) * p->total);
 	if (p->stat && p->pid)
 	{
-		p->stat[0] = 0;
+		while (p->i < p->total)
+			p->stat[p->i++] = -1;
+		p->i = 0;
 		p->pid[0] = 0;
 	}
 	else

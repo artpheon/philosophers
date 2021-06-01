@@ -13,7 +13,6 @@ t_phil	*prop_get_phil(int n)
 		{
 			new[i].id = i + 1;
 			new[i].ate_stmp = 0;
-			new[i].fin = false;
 			++i;
 		}
 		return (new);
@@ -48,7 +47,7 @@ int	ph_fill_prop_basic(t_ph_prop *p, const int num[], int argc)
 	p->t_die = num[1];
 	p->t_eat = num[2];
 	p->t_slp = num[3];
-	p->start_t = get_time();
+	p->start_t = 0;
 	if (argc == 6)
 		p->m_eat_num = num[4];
 	else

@@ -28,11 +28,9 @@ void	*pcycle(void *args)
 	p = (t_ph_prop *)args;
 	i = 0;
 	phil = &p->phil[p->i++];
-	while (1)
+	while (p->eat_num != p->total)
 	{
 		pcycle_eat_routine(p, phil);
-		if (phil->fin)
-			break ;
 		print_stat(p, phil, STSLP);
 		fsleep(ms_to_micros(p->t_slp));
 		print_stat(p, phil, STTHNK);

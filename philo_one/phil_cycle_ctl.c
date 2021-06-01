@@ -9,19 +9,19 @@ void	*watch_stat(void *args)
 	p = (t_ph_prop *)args;
 	phil = p->phil;
 	i = 0;
-	while ((int)(get_time() - p->start_t - phil[i].ate_stmp) < p->t_die)
+	while (p->eat_num != p->total)
 	{
-		usleep(100);
-		if (p->eat_num == p->total)
+		usleep(10);
+		if (p->t_die < (int)(get_time() - p->start_t - phil[i].ate_stmp))
 		{
-			print_stat(p, &phil[i], STFIN);
+			print_stat(p, &phil[i], STDEA);
 			return (NULL);
 		}
 		++i;
 		if (i == p->total)
 			i = 0;
 	}
-	print_stat(p, phil, STDEA);
+	print_stat(p, phil, STFIN);
 	return (NULL);
 }
 
@@ -100,10 +100,10 @@ int	wait_phils(t_ph_prop *p)
 	pthread_t	waiter;
 
 	if (pthread_create(&watcher, NULL, watch_stat, p))
-		return (perr_exit("watcher was not created."));
+		return (perr_exit("Pthread_create for watcher failed:"));
 	if (pthread_create(&waiter, NULL, &f_waiter, p))
-		return (perr_exit("could not create waiter"));
-	if (pthread_join(watcher, NULL) == 0)
-		return (0);
-	return (1);
+		return (perr_exit("Pthread_create for waiter failed:"));
+	if (pthread_join(watcher, NULL))
+		return (perr_exit("Watcher could not join:"));
+	return (0);
 }

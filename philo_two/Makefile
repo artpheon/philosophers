@@ -1,4 +1,4 @@
-NAME =	philo_three
+NAME =	philo_two
 
 HDR =	philosophers.h
 
@@ -7,7 +7,7 @@ SRCS =	main.c \
 		phil_create.c \
 		utils.c \
 		phil_cycle.c \
-		phil_cycle_ctl.c \
+		watcher.c \
 
 OBJS =	$(SRCS:.c=.o)
 

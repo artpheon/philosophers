@@ -16,46 +16,40 @@
 
 typedef struct s_phil
 {
-	struct s_phil	*left;
-	struct s_phil	*right;
-	unsigned int	id;
-	unsigned long long ate_stmp;
-	bool	fin;
-	bool	st_eat;
-	bool	st_slp;
-	bool	st_thk;
-	bool	st_dea;
+	int			id;
+	uint64_t	ate_stmp;
 }	t_phil;
 
 typedef struct s_ph_prop
 {
-	unsigned int	total;
-	unsigned int	t_die;
-	unsigned int	t_eat;
-	unsigned int	t_slp;
-	unsigned int	m_eat_num;
-	int	i;
-	struct timeval	t;
-	sem_t *sem;
+	int				total;
+	int				t_die;
+	int				t_eat;
+	int				t_slp;
+	int				m_eat_num;
+	int				eat_num;
+	int				i;
+	sem_t			*sem;
 	pthread_mutex_t	common_lock;
-	unsigned long long start_t;
-	t_phil	*phil;
+	uint64_t		start_t;
+	t_phil			*phil;
 }	t_ph_prop;
 
-
-int	err_exit(char *str);
-int perr_exit(char *str);
-void	fsleep(unsigned int mcrsec);
-unsigned long	ms_to_micros(unsigned int ms);
-unsigned long	micros_to_ms(unsigned long ms);
-bool watch_stat_finish(t_ph_prop *p);
-uint64_t get_time(void);
-void	try_die(t_ph_prop *p, t_phil *phil);
-void ft_putnbr_fd(uint64_t n, int fd);
-int	ft_atoi(const char *str);
-int	ft_isdigit(int c);
-int	is_strnum(const char *str);
-t_phil  *prop_get_phil(unsigned int n);
-int	ph_fill_prop(t_ph_prop *p, char *argv[], int argc);
+int			ft_atoi(const char *str);
+int			ft_isdigit(int c);
+int			is_strnum(const char *str);
+int			err_exit(char *str);
+int			perr_exit(char *str);
+uint64_t	ms_to_micros(unsigned int ms);
+void		fsleep(unsigned int mcrsec);
+uint64_t	get_time(void);
+t_phil		*prop_get_phil(int n);
+int			fill_prop_num(int *num, int argc, char *argv[]);
+int			ph_fill_prop_basic(t_ph_prop *p, const int num[], int argc);
+int			fill_prop_sem(t_ph_prop *p);
+void		print_stat(t_ph_prop *p, t_phil *phil, int stat);
+void		pcycle_eat_routine(t_ph_prop *p, t_phil *phil, int round);
+void		*watch_stat(void *args);
+int			watcher_setup(t_ph_prop *p);
 
 #endif

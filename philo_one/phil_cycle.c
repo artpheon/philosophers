@@ -34,12 +34,9 @@ void	pcycle_eat_routine(t_ph_prop *p, t_phil *phil)
 	print_stat(p, phil, STEAT);
 	phil->ate_stmp = get_time() - p->start_t;
 	fsleep(ms_to_micros(p->t_eat));
-	phil->ate_num += 1;
-	if (phil->ate_num == p->m_eat_num)
-	{
-		phil->fin = true;
-		p->eat_num += 1;
-	}
 	pthread_mutex_unlock(&phil->fork_left);
 	pthread_mutex_unlock(phil->fork_right);
+	phil->ate_num += 1;
+	if (phil->ate_num == p->m_eat_num)
+		p->eat_num += 1;
 }

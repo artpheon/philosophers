@@ -36,27 +36,44 @@ void	*pcycle(void *args)
 	return (NULL);
 }
 
+int	philo_setup(pthread_t *threads, t_ph_prop *p)
+{
+	int	i;
+
+	i = 0;
+	p->start_t = get_time();
+	while (i < p->total)
+	{
+		if (pthread_create(&threads[i], NULL, pcycle, p))
+			return (perr_exit("Pthread_create for philosophers failed:"));
+		if (pthread_detach(threads[i]))
+			return (perr_exit("Pthread_detach for philosophers failed:"));
+		++i;
+	}
+	return (0);
+}
+
+int	philo_exit(t_ph_prop *p)
+{
+	if (sem_close(p->sem))
+		return (perr_exit("Could not close semaphore"));
+	return (0);
+}
+
 int	main(int argc, char *argv[])
 {
 	t_ph_prop	p;
 	pthread_t	*threads;
-	int			i;
 
 	setbuf(stdout, NULL);
 	if (ph_fill_prop(&p, argv, argc) == 1)
 		return (1);
 	threads = (pthread_t *)malloc(sizeof(pthread_t) * p.total);
 	if (!threads)
-		return (perr_exit("Malloc for threads failed:"));
-	i = 0;
-	p.start_t = get_time();
-	while (i < p.total)
-	{
-		if (pthread_create(&threads[i], NULL, pcycle, &p))
-			return (perr_exit("Pthread_create for philosophers failed:"));
-		if (pthread_detach(threads[i]))
-			return (perr_exit("Pthread_detach for philosophers failed:"));
-		++i;
-	}
-	return (watcher_setup(&p));
+		return (perr_exit("Malloc for threads failed"));
+	if (philo_setup(threads, &p))
+		return (1);
+	if (watcher_setup(&p))
+		return (1);
+	return (philo_exit(&p));
 }

@@ -106,13 +106,11 @@ int	watcher_setup(t_ph_prop *p)
 	ret = pthread_create(&waiter, NULL, f_waiter, p);
 	if (ret)
 		perr_exit("Waiter was not created:");
-	puts("watcher created");
 	ret = pthread_detach(waiter);
 	if (ret)
 		perr_exit("Pthread_detach for waiter failed:");
 	ret = pthread_join(watcher, NULL);
 	if (ret)
 		perr_exit("Could not join watcher:");
-	sem_close(p->sem);
 	return (ret);
 }

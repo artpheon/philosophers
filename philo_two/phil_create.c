@@ -1,6 +1,6 @@
 #include "philosophers.h"
 
-void	set_sem_name(char name[], int num)
+static void	set_sem_name(char name[], int num)
 {
 	int	i;
 

@@ -53,18 +53,6 @@ int	philo_setup(pthread_t *threads, t_ph_prop *p)
 	return (0);
 }
 
-int	philo_exit(t_ph_prop *p)
-{
-	int	i;
-
-	sem_close(p->sem);
-	sem_close(p->common_lock);
-	i = 0;
-	while (i < p->total)
-		sem_close(p->phil[i++].eat_block);
-	return (0);
-}
-
 int	main(int argc, char *argv[])
 {
 	t_ph_prop	p;
@@ -78,7 +66,5 @@ int	main(int argc, char *argv[])
 		return (perr_exit("Malloc for threads failed"));
 	if (philo_setup(threads, &p))
 		return (1);
-	if (watcher_setup(&p))
-		return (1);
-	return (philo_exit(&p));
+	return (watcher_setup(&p));
 }

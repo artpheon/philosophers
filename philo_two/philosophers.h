@@ -53,6 +53,5 @@ void		pcycle_eat_routine(t_ph_prop *p, t_phil *phil, int round);
 void		*watch_stat(void *args);
 int			watcher_setup(t_ph_prop *p);
 int			philo_setup(pthread_t *threads, t_ph_prop *p);
-int			philo_exit(t_ph_prop *p);
 
 #endif

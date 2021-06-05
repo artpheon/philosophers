@@ -58,7 +58,5 @@ int	watcher_setup(t_ph_prop	*p)
 	}
 	else
 		print_stat(p, p->phil, p->i);
-	sem_close(p->sem);
-	sem_close(p->common);
 	return (0);
 }

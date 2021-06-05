@@ -110,7 +110,5 @@ int	watcher_setup(t_ph_prop *p)
 		return (perr_exit("Watcher was not created:"));
 	if (pthread_join(watcher, NULL))
 		return (perr_exit("Could not join watcher:"));
-	sem_close(p->sem);
-	sem_close(p->common_lock);
 	return (0);
 }

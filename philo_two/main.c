@@ -55,8 +55,13 @@ int	philo_setup(pthread_t *threads, t_ph_prop *p)
 
 int	philo_exit(t_ph_prop *p)
 {
-	if (sem_close(p->sem))
-		return (perr_exit("Could not close semaphore"));
+	int	i;
+
+	sem_close(p->sem);
+	sem_close(p->common_lock);
+	i = 0;
+	while (i < p->total)
+		sem_close(p->phil[i++].eat_block);
 	return (0);
 }
 

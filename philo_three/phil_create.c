@@ -67,10 +67,10 @@ int	ph_fill_prop_basic(t_ph_prop *p, int num[], int argc)
 
 int	fill_prop_sem(t_ph_prop *p)
 {
-	p->sem = sem_open("sem", O_CREAT | O_EXCL, 0644, p->total);
+	p->sem = sem_open("sem_fork", O_CREAT | O_EXCL, 0644, p->total);
 	if (p->sem == SEM_FAILED)
 		return (perr_exit("Semaphore failed:"));
-	if (sem_unlink("sem") != 0)
+	if (sem_unlink("sem_fork") != 0)
 		return (perr_exit("Sem_unlink failed:"));
 	p->common = sem_open("sem_common", O_CREAT | O_EXCL, 0644, 1);
 	if (p->common == SEM_FAILED)

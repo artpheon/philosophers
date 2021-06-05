@@ -46,7 +46,6 @@ int	fork_philosophers(t_ph_prop	*p)
 int	main(int argc, char *argv[])
 {
 	t_ph_prop	p;
-	int			stat;
 
 	setbuf(stdout, NULL);
 	if (ph_fill_prop(&p, argv, argc) == 1)

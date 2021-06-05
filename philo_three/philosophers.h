@@ -63,5 +63,6 @@ void		print_stat(t_ph_prop *p, t_phil *phil, int stat);
 void		pcycle_eat_routine(t_ph_prop *p, t_phil *phil);
 void		*pcycle_check_death(void *arg);
 int			pcycle(t_ph_prop *args);
+int			exit_all(t_ph_prop	*p);
 
 #endif

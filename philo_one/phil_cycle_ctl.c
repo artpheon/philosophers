@@ -99,10 +99,15 @@ int	wait_phils(t_ph_prop *p)
 	pthread_t	watcher;
 	pthread_t	waiter;
 
+	if (p->total != 1)
+	{
+		if (pthread_create(&waiter, NULL, &f_waiter, p))
+			return (perr_exit("Pthread_create for waiter failed:"));
+		if (pthread_detach(waiter))
+			return (perr_exit("Pthread detach for waiter failed"));
+	}
 	if (pthread_create(&watcher, NULL, watch_stat, p))
 		return (perr_exit("Pthread_create for watcher failed:"));
-	if (pthread_create(&waiter, NULL, &f_waiter, p))
-		return (perr_exit("Pthread_create for waiter failed:"));
 	if (pthread_join(watcher, NULL))
 		return (perr_exit("Watcher could not join:"));
 	return (0);

@@ -1,9 +1,31 @@
 #include "philosophers.h"
 
+void	set_sem_name(char name[], int num)
+{
+	int	i;
+
+	if (num > 999)
+		return ;
+	name[0] = 's';
+	name[1] = 'e';
+	name[2] = 'm';
+	i = 3;
+	if (num == 0)
+		name[i++] = '0';
+	while (num != 0)
+	{
+		name[i] = (num % 10) - '0';
+		num /= 10;
+		++i;
+	}
+	name[i] = '\0';
+}
+
 t_phil	*prop_get_phil(int n)
 {
 	t_phil	*new;
 	int		i;
+	char	name[10];
 
 	new = (t_phil *)malloc(sizeof(t_phil) * n);
 	if (new)
@@ -13,10 +35,13 @@ t_phil	*prop_get_phil(int n)
 		{
 			new[i].id = i + 1;
 			new[i].ate_stmp = 0;
-			if (pthread_mutex_init(&new[i].eat_block, NULL))
+			set_sem_name(name, i);
+			new[i].eat_block = sem_open(name, O_CREAT | O_EXCL, 0644, 1);
+			if (new[i].eat_block == SEM_FAILED)
 				return (NULL);
-			if (pthread_mutex_lock(&new[i].eat_block))
+			if (sem_unlink(name))
 				return (NULL);
+			sem_wait(new[i].eat_block);
 			++i;
 		}
 		return (new);
@@ -56,10 +81,6 @@ int	ph_fill_prop_basic(t_ph_prop *p, const int num[], int argc)
 		p->m_eat_num = num[4];
 	else
 		p->m_eat_num = 0;
-	if (pthread_mutex_init(&p->common_lock, NULL))
-		return (perr_exit("Common lock init failed:"));
-	if (p->total == 1)
-		return (err_exit("Cannot be less than 2 philosophers"));
 	if (p->t_eat >= p->t_die || p->t_slp >= p->t_die)
 		return (err_exit("Philosophers will die too quickly"));
 	return (0);
@@ -67,10 +88,15 @@ int	ph_fill_prop_basic(t_ph_prop *p, const int num[], int argc)
 
 int	fill_prop_sem(t_ph_prop *p)
 {
-	p->sem = sem_open("sem", O_CREAT | O_EXCL, 0644, p->total);
+	p->sem = sem_open("fork_sem", O_CREAT | O_EXCL, 0644, p->total);
 	if (p->sem == SEM_FAILED)
-		return (perr_exit("Semaphore failed:"));
-	if (sem_unlink("sem") != 0)
-		return (perr_exit("Sem_unlink failed:"));
+		return (perr_exit("Semaphore failed"));
+	if (sem_unlink("fork_sem"))
+		return (perr_exit("Sem_unlink failed"));
+	p->common_lock = sem_open("common_lock", O_CREAT | O_EXCL, 0644, 1);
+	if (p->common_lock == SEM_FAILED)
+		return (perr_exit("Semaphore failed"));
+	if (sem_unlink("common_lock"))
+		return (perr_exit("Sem_unlink failed"));
 	return (0);
 }

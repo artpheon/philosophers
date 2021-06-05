@@ -7,8 +7,8 @@ int	ph_fill_prop(t_ph_prop *p, char *argv[], int argc)
 	if (fill_prop_num(num, argc, argv) == 1)
 		return (1);
 	ph_fill_prop_basic(p, num, argc);
-	if (p->total == 1)
-		return (err_exit("Cannot be less than 2 philosophers"));
+	//if (p->total == 1)
+	//	return (err_exit("Cannot be less than 2 philosophers"));
 	if (p->t_eat >= p->t_die || p->t_slp >= p->t_die)
 		return (err_exit("Philosophers will die too quickly"));
 	p->phil = prop_get_phil(p->total);

@@ -9,7 +9,7 @@ void	f_waiter_odds(int max, int total, int wait, t_phil *phil)
 	eating = 1;
 	while (eating)
 	{
-		pthread_mutex_unlock(&phil[eating - 1].eat_block);
+		sem_post(phil[eating - 1].eat_block);
 		if (++counter == max)
 		{
 			fsleep(wait);
@@ -33,7 +33,7 @@ void	f_waiter_evens(int max, int total, int wait, t_phil *phil)
 	eating = 1;
 	while (eating)
 	{
-		pthread_mutex_unlock(&phil[eating - 1].eat_block);
+		sem_post(phil[eating - 1].eat_block);
 		if (++counter == max)
 		{
 			fsleep(wait);
@@ -98,19 +98,17 @@ int	watcher_setup(t_ph_prop *p)
 {
 	pthread_t	watcher;
 	pthread_t	waiter;
-	int			ret;
 
-	ret = pthread_create(&watcher, NULL, watch_stat, p);
-	if (ret)
-		perr_exit("Watcher was not created:");
-	ret = pthread_create(&waiter, NULL, f_waiter, p);
-	if (ret)
-		perr_exit("Waiter was not created:");
-	ret = pthread_detach(waiter);
-	if (ret)
-		perr_exit("Pthread_detach for waiter failed:");
-	ret = pthread_join(watcher, NULL);
-	if (ret)
-		perr_exit("Could not join watcher:");
-	return (ret);
+	if (p->total != 1)
+	{
+		if (pthread_create(&waiter, NULL, f_waiter, p))
+			return (perr_exit("Waiter was not created:"));
+		if (pthread_detach(waiter))
+			return (perr_exit("Pthread_detach for waiter failed:"));
+	}
+	if (pthread_create(&watcher, NULL, watch_stat, p))
+		return (perr_exit("Watcher was not created:"));
+	if (pthread_join(watcher, NULL))
+		return (perr_exit("Could not join watcher:"));
+	return (0);
 }

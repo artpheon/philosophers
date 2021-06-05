@@ -18,7 +18,7 @@ typedef struct s_phil
 {
 	int				id;
 	uint64_t		ate_stmp;
-	pthread_mutex_t	eat_block;
+	sem_t			*eat_block;
 }	t_phil;
 
 typedef struct s_ph_prop
@@ -31,7 +31,7 @@ typedef struct s_ph_prop
 	int				eat_num;
 	int				i;
 	sem_t			*sem;
-	pthread_mutex_t	common_lock;
+	sem_t			*common_lock;
 	uint64_t		start_t;
 	t_phil			*phil;
 }	t_ph_prop;
@@ -52,5 +52,7 @@ void		print_stat(t_ph_prop *p, t_phil *phil, int stat);
 void		pcycle_eat_routine(t_ph_prop *p, t_phil *phil, int round);
 void		*watch_stat(void *args);
 int			watcher_setup(t_ph_prop *p);
+int			philo_setup(pthread_t *threads, t_ph_prop *p);
+int			philo_exit(t_ph_prop *p);
 
 #endif

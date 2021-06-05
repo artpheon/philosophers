@@ -12,7 +12,7 @@ int	ph_fill_prop(t_ph_prop *p, char *argv[], int argc)
 		return (1);
 	p->phil = prop_get_phil(p->total);
 	if (p->phil == NULL)
-		return (perr_exit("Could not mallocate for philosophers:"));
+		return (perr_exit("A philosopher was not created"));
 	return (0);
 }
 
